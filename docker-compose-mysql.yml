@@ -1,0 +1,92 @@
+version: "3.8"
+
+# networks:
+#   my-network:
+#     external:
+#       name: my-shared-network
+
+networks:
+  my-network:
+    external: true
+    name: my-shared-network
+
+# volumes:
+#   db-mysql_data:
+#     driver: local
+
+services:
+  mysql:
+    platform: 'linux/x86_64'
+    image: 'mysql:8'
+
+    # reading MYSQL_CONTAINER_NAME from .env file
+    container_name: '${MYSQL_CONTAINER_NAME}'
+
+    # using cmd
+    tty: true
+
+    ports:
+      - '${DB_PORT}:3306'
+
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_ROOT_PWD}'
+      # MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PWD}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: '${MYSQL_ALLOW_EMPTY_PASSWORD}'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+
+    volumes:
+      # volume
+      # - 'db-mysql_data:/var/lib/mysql/'
+
+      # bind-mount
+      - ./mysql_data:/var/lib/mysql
+
+    networks:
+      - my-network
+
+
+# docker compose -f docker-compose-mysql.yml -f docker-compose-phpmyadmin.yml up --force-recreate -d
+# docker compose -f docker-compose-mysql.yml -f docker-compose-phpmyadmin.yml up --force-recreate -d && docker compose -f docker-compose-mysql.yml exec php ash -c "./artisan app:dev"
+
+
+# docker network create my-shared-network
+# docker network ls
+# docker compose up --force-recreate -d && docker-compose exec php ash|bash
+# docker compose up --force-recreate -d && docker-compose exec php ash -c "./artisan app:dev"
+
+
+# mysql -h 0.0.0.0 -P 3000 --protocol=tcp -u root -p
+# mysql --protocol=tcp -u root -p
+
+
+# docker compose -f docker-compose-phpmyadmin.yml -f docker-compose-mysql.yml down -v
+# docker-compose down -v --rmi all
+
+
+# docker volume create volname
+# docker volume ls
+# docker volume inspect <volume-name>
+
+
+# docker exec -it mysql-container bash
+# mysqldump -u root -p tehranpay-v1 > /var/lib/mysql/all_my_database.sql
+#  -> /var/lib/mysql/mydatabase.sql is the address of bindmount
+# ls -alF
+
+
+# create image, container, the database...
+# docker exec -it mysql bash
+# mysql -u root -p tehranpay-v1 < /var/lib/mysql/all_my_database.sql
+
+
+# docker ps -a
+# docker ps
+# docker inspect <container-name or container-id>
+# docker rm -f <container-name or container-id>
+# docker container prune
+
+
+# docker compose build --no-cache && docker compose up --force-recreate -d
+# docker system prune
+# docker system prune --all
